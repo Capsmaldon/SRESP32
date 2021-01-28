@@ -1,6 +1,7 @@
 /.pio
 platformio.ini
 /.vscode
+src/pinHeaders.h
 
 # Prerequisites
 *.d
