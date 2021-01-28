@@ -26,6 +26,11 @@ void setup() {
 
   display.display();
   delay(2000); // Pause for 2 seconds
+  display.clearDisplay();
+  display.display();
+
+  display.setTextSize(2);
+  display.setTextColor(WHITE);
 }
 
 const int SC_ENTER = 0;
@@ -35,16 +40,36 @@ const int SC_ARROW_DOWN = 3;
 const int SC_ARROW_LEFT = 4;
 const int SC_ARROW_RIGHT = 5;
 
+int characterIndex = 0;
 char passwordBuffer[64];
 
 void processSpecialCharacter(int specialCharacter)
 {
-  
+  if(specialCharacter == SC_BACKSPACE)
+  {
+    if(characterIndex > 0) characterIndex--;
+    passwordBuffer[characterIndex] = '\0';
+    display.clearDisplay();
+    display.setCursor(0,0);
+    display.println(passwordBuffer);
+    display.display();
+  }
 }
 
 void processCharacter(char character)
 {
+  passwordBuffer[characterIndex] = character;
   
+  if(characterIndex < 62)
+  {
+    characterIndex++;
+    passwordBuffer[characterIndex] = '\0';
+  }
+
+  display.clearDisplay();
+  display.setCursor(0,0);
+  display.println(passwordBuffer);
+  display.display();
 }
 
 void processSerialInput()
@@ -82,7 +107,13 @@ void processSerialInput()
         Serial.printf("<Backspace>");
         processSpecialCharacter(SC_BACKSPACE);
       }
-      else Serial.printf("%c", character);
+      else
+      {
+        Serial.printf("%c", character);
+        processCharacter(character);
+      }
+      
+      
     }
   }
 }
