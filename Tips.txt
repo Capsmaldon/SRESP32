@@ -1,4 +1,0 @@
-Instructions:
-
-1)Install Adafruit BusIO, Adafruit GFX Library, Adafruit SSD1306
-2)It should work? Probably not if your display is SPI rather than I2C though
