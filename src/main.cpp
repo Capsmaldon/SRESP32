@@ -1,16 +1,13 @@
-#include <Arduino.h>
+#include "sresp32Display.h"
+
+Sresp32Display sresp32Display;
 
 void setup() {
   // put your setup code here, to run once:
-  pinMode(LED_BUILTIN, OUTPUT);
-  Serial.begin(115200);
+  sresp32Display.run();
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
-  Serial.println("Blink!");
-  sleep(500);
-  digitalWrite(LED_BUILTIN, HIGH);
-  sleep(500);
-  digitalWrite(LED_BUILTIN, LOW);
+  sresp32Display.tick();
 }
