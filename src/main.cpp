@@ -1,10 +1,11 @@
 #include "sresp32Display.h"
+#include "sresp32Audio.h"
 
 Sresp32Display sresp32Display;
 
 void setup() {
   // put your setup code here, to run once:
-  sresp32Display.run();
+  sresp32Display.initialise();
 }
 
 void loop() {
