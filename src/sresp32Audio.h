@@ -32,20 +32,20 @@ public:
         i2s_set_pin(I2S_NUM_0, &pin_config);
         i2s_set_sample_rates(I2S_NUM_0, 44100);
 
-        phaseIncrement = (1.0/static_cast<double>(sampleRate)) * 440.0;
+        phaseIncrement = (M_TWOPI/static_cast<double>(sampleRate)) * 440.0;
     }
 
     void tick()
     {
         for(int i = 0; i < bufferLength; i++)
         {
-            buffer[i] = phase > 0.5 ? -32768 : 32767;
+            buffer[i] = sin(phase) * 32767;
             phase += phaseIncrement;
-            if(phase > 1.0) phase -= 1.0;
+            if(phase > M_TWOPI) phase -= M_TWOPI;
         }
 
         size_t bytesWritten = 0;
-        i2s_write(I2S_NUM_0, buffer, bufferLength, &bytesWritten, 1000);
+        i2s_write(I2S_NUM_0, buffer, bufferLength * sizeof(int16_t), &bytesWritten, 1000);
     }
 
 private:
