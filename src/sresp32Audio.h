@@ -39,7 +39,7 @@ public:
     {
         for(int i = 0; i < bufferLength; i++)
         {
-            buffer[i] = sin(phase) * 32767;
+            buffer[i] = sin(phase) * 16384;
             phase += phaseIncrement;
             if(phase > M_TWOPI) phase -= M_TWOPI;
         }
