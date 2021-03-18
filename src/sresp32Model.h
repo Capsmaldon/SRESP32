@@ -13,22 +13,9 @@ public:
     class LockedDataReference
     {
         public:
-        LockedDataReference(const int key, const size_t size, void* data, std::mutex &lock, Sresp32ModelEntry &entry) : 
-        key(key), size(size), data(data), modelLock(lock), entry(entry)
-        {
-            modelLock.lock();
-        }
-
-        ~LockedDataReference()
-        {
-            modelLock.unlock();
-            if(notify) entry.updateObservers();
-        }
-
-        void disableNotification()
-        {
-            notify = false;
-        }
+        LockedDataReference(const int key, const size_t size, void* data, std::mutex &lock, Sresp32ModelEntry &entry);
+        ~LockedDataReference();
+        void disableNotification();
 
         const int key;
         const size_t size;
@@ -43,72 +30,23 @@ public:
     class Observer
     {
         public:
-        virtual ~Observer()
-        {
-            linkedEntry->removeObserver(this);
-        }
-        void link(Sresp32ModelEntry* entry, const size_t size)
-        {
-            linkedEntry = entry;
-        }
-        void notify()
-        {
-            LockedDataReference data = linkedEntry->access();
-            data.disableNotification();
-            notified(data);
-        }
+        virtual ~Observer();
+        void link(Sresp32ModelEntry* entry, const size_t size);
+        void notify();
         virtual void notified(LockedDataReference &data) = 0;
 
         private:
         Sresp32ModelEntry* linkedEntry;
     };
 
-    Sresp32ModelEntry(const int key, size_t bytes) : key(key), size(bytes)
-    {
-        data = malloc(size);
-    }
+    Sresp32ModelEntry(const int key, size_t bytes);
+    Sresp32ModelEntry(const Sresp32ModelEntry& other);
 
-    Sresp32ModelEntry(const Sresp32ModelEntry& other) : key(other.key), size(other.size), data(other.data)
-    {
-
-    }
-
-    void release()
-    {
-        free(data);
-    }
-
-    void addObserver(Observer* observer)
-    {
-        observer->link(this, size);
-        observers.push_back(observer);
-    }
-
-    void removeObserver(Observer* observerToRemove)
-    {
-        for(int i = 0; i < observers.size(); i++)
-        {
-            Observer* observer = observers[i];
-            if(observerToRemove == observer)
-            {
-                observers.erase(observers.begin() + i);
-                break;
-            }
-        }
-    }
-
-    void updateObservers()
-    {
-        for(Observer* observer : observers)
-        {
-            observer->notify();
-        }
-    }
-
-    LockedDataReference access()
-    {
-        return LockedDataReference(key, size, data, lock, *this);
-    }
+    void release();
+    void addObserver(Observer* observer);
+    void removeObserver(Observer* observerToRemove);
+    void updateObservers();
+    LockedDataReference access();
     
 private:
     std::mutex lock;
@@ -122,27 +60,10 @@ private:
 class Sresp32Model
 {
     public:
-    Sresp32Model()
-    {
-        addEntry(0, sizeof(float));
-        addEntry(1, sizeof(int));
-        addEntry(2, sizeof(int) * 8);
-    }
-
-    ~Sresp32Model()
-    {
-        for(auto &valuePair : model) valuePair.second.release();
-    }
-
-    void addEntry(int key, unsigned long numOfBytes)
-    {
-        model.emplace(key, Sresp32ModelEntry(key, numOfBytes));
-    }
-
-    Sresp32ModelEntry& getEntry(int key)
-    {
-        return model.at(key);
-    }
+    Sresp32Model();
+    ~Sresp32Model();
+    void addEntry(int key, unsigned long numOfBytes);
+    Sresp32ModelEntry& getEntry(int key);
 
     private:
     std::unordered_map<int, Sresp32ModelEntry> model;
