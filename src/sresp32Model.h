@@ -7,8 +7,6 @@
 #include <mutex>
 #include <string.h>
 
-static std::mutex lock;
-
 class Sresp32ModelEntry
 {
 public:
@@ -70,6 +68,11 @@ public:
         data = malloc(size);
     }
 
+    Sresp32ModelEntry(const Sresp32ModelEntry& other) : key(other.key), size(other.size), data(other.data)
+    {
+
+    }
+
     void release()
     {
         free(data);
@@ -108,6 +111,8 @@ public:
     }
     
 private:
+    std::mutex lock;
+
     const int key;
     const size_t size;
     void* data;
@@ -121,6 +126,7 @@ class Sresp32Model
     {
         addEntry(0, sizeof(float));
         addEntry(1, sizeof(int));
+        addEntry(2, sizeof(int) * 8);
     }
 
     ~Sresp32Model()

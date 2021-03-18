@@ -4,21 +4,24 @@
 #include <Arduino.h>
 #include <heltec.h>
 
-#include "sresp32Tracker.h"
 #include "sresp32Model.h"
 
-class Sresp32CoreComponent
+class Sresp32CoreComponent : public Sresp32ModelEntry::Observer
 {
 public:
     Sresp32CoreComponent(Sresp32Model &model) : model(model)
     {
         display = Heltec.display;
+        model.getEntry(1).addObserver(this);
+    }
+
+    void notified(Sresp32ModelEntry::LockedDataReference &data) override
+    {
+        stepCounter = *static_cast<int*>(data.data);
     }
 
     void paint()
     {
-        Sresp32ModelEntry::LockedDataReference data = model.getEntry(1).access();
-        int stepCounter = *static_cast<int*>(data.data);
         String counterString(stepCounter);
         display->drawString(0, 0, counterString);
     }
@@ -26,6 +29,8 @@ public:
 private:
     SSD1306Wire* display = nullptr;
     Sresp32Model &model;
+
+    int stepCounter = 0;
 };
 
 #endif

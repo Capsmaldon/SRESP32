@@ -6,7 +6,16 @@ class Sresp32Sequencer
     public:
     Sresp32Sequencer(Sresp32Model &model) : model(model)
     {
-
+        auto dataRef = model.getEntry(2).access();
+        int* sequence = static_cast<int*>(dataRef.data);
+        sequence[0] = 60;
+        sequence[1] = 62;
+        sequence[2] = 64;
+        sequence[3] = 65;
+        sequence[4] = 67;
+        sequence[5] = 69;
+        sequence[6] = 70;
+        sequence[7] = 71;
     }
 
     bool tick()

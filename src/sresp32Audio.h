@@ -38,17 +38,37 @@ public:
         i2s_set_pin(I2S_NUM_0, &pin_config);
         i2s_set_sample_rates(I2S_NUM_0, 44100);
 
-        phaseIncrement = (M_TWOPI/static_cast<double>(sampleRate)) * 440.0;
+        setNote(60);
 
         model.getEntry(0).addObserver(this);
-        volume = 1.0f;
+        model.getEntry(1).addObserver(this);
     }
 
     void notified(Sresp32ModelEntry::LockedDataReference &data) override
     {
-        volume = *static_cast<float*>(data.data);
+        switch(data.key)
+        {
+            case 0: //Volume
+            volume = *static_cast<float*>(data.data);
+            break;
+
+            case 1: //Step
+            {
+            step = *static_cast<int*>(data.data);
+            int* sequence = static_cast<int*>(model.getEntry(2).access().data);
+            int note = sequence[step];
+            setNote(note);
+            }
+            break;
+        }
     }
 
+    void setNote(int midiNote)
+    {
+        float freq = 440.0 * pow(2.0, (midiNote - 69)/12.0);
+        phaseIncrement = (M_TWOPI/static_cast<double>(sampleRate)) * freq;
+    }
+    
     void tick()
     {
         for(int i = 0; i < bufferLength; i++)
@@ -70,7 +90,8 @@ double phaseIncrement;
 int16_t buffer[64];
 
 Sresp32Model &model;
-std::atomic<float> volume;
+float volume = 1.0f;
+int step = 0;
 };
 
 #endif
