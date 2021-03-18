@@ -3,11 +3,17 @@
 
 #include "driver/i2s.h"
 #include "freertos/queue.h"
+#include "sresp32Model.h"
+#include <atomic>
 
-class Sresp32Audio
+#ifndef M_TWOPI
+#define M_TWOPI 3.14159265358979323846 * 2.0
+#endif
+
+class Sresp32Audio : public Sresp32ModelEntry::Observer
 {
 public:
-    void initialise()
+    Sresp32Audio(Sresp32Model &model) : model(model)
     {
         static const i2s_config_t i2s_config = {
             .mode = static_cast<i2s_mode_t>(I2S_MODE_MASTER | I2S_MODE_TX),
@@ -33,13 +39,21 @@ public:
         i2s_set_sample_rates(I2S_NUM_0, 44100);
 
         phaseIncrement = (M_TWOPI/static_cast<double>(sampleRate)) * 440.0;
+
+        model.getEntry(0).addObserver(this);
+        volume = 1.0f;
+    }
+
+    void notified(Sresp32ModelEntry::LockedDataReference &data) override
+    {
+        volume = *static_cast<float*>(data.data);
     }
 
     void tick()
     {
         for(int i = 0; i < bufferLength; i++)
         {
-            buffer[i] = sin(phase) * 16384;
+            buffer[i] = sin(phase) * 2000 * volume;
             phase += phaseIncrement;
             if(phase > M_TWOPI) phase -= M_TWOPI;
         }
@@ -54,6 +68,9 @@ const int sampleRate = 44100;
 double phase = 0;
 double phaseIncrement;
 int16_t buffer[64];
+
+Sresp32Model &model;
+std::atomic<float> volume;
 };
 
 #endif
