@@ -83,7 +83,7 @@ Sresp32Model::Sresp32Model()
 {
     addEntry(0, sizeof(float));
     addEntry(1, sizeof(int));
-    addEntry(2, sizeof(int) * 8);
+    addEntry(2, sizeof(int) * 8 * 2);
 }
 
 Sresp32Model::~Sresp32Model()

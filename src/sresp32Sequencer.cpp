@@ -4,14 +4,24 @@ Sresp32Sequencer::Sresp32Sequencer(Sresp32Model &model) : model(model)
 {
     auto dataRef = model.getEntry(2).access();
     int* sequence = static_cast<int*>(dataRef.data);
-    sequence[0] = 60;
-    sequence[1] = 62;
-    sequence[2] = 64;
-    sequence[3] = 65;
-    sequence[4] = 67;
-    sequence[5] = 69;
-    sequence[6] = 70;
-    sequence[7] = 71;
+
+    sequence[0 * 2 + 0] = 60;
+    sequence[1 * 2 + 0] = 62;
+    sequence[2 * 2 + 0] = 64;
+    sequence[3 * 2 + 0] = 65;
+    sequence[4 * 2 + 0] = 67;
+    sequence[5 * 2 + 0] = 69;
+    sequence[6 * 2 + 0] = 71;
+    sequence[7 * 2 + 0] = 72;
+
+    sequence[0 * 2 + 1] = 0;
+    sequence[1 * 2 + 1] = 38;
+    sequence[2 * 2 + 1] = 0;
+    sequence[3 * 2 + 1] = 41;
+    sequence[4 * 2 + 1] = 0;
+    sequence[5 * 2 + 1] = 45;
+    sequence[6 * 2 + 1] = 0;
+    sequence[7 * 2 + 1] = 48;
 }
 
 bool Sresp32Sequencer::tick()
@@ -23,10 +33,10 @@ bool Sresp32Sequencer::tick()
         time = millis();
         updateCounter();
 
-        Sresp32ModelEntry::LockedDataReference data = model.getEntry(0).access();
-        float& volume = *static_cast<float*>(data.data);
-        if(volume <= 0.1f) volume = 1.0f;
-        else volume = 0.0f;
+        // Sresp32ModelEntry::LockedDataReference data = model.getEntry(0).access();
+        // float& volume = *static_cast<float*>(data.data);
+        // if(volume <= 0.1f) volume = 1.0f;
+        // else volume = 0.0f;
     }
     return ready;
 }

@@ -18,7 +18,7 @@ class Sresp32Sequencer
 
     int stepCounter = 0;
     int stepNum = 8;
-    int stepDelay = 100;
+    int stepDelay = 500;
     int stepDirection = 1;
 };
 
