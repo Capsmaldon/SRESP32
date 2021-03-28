@@ -66,7 +66,7 @@ class Sresp32GeneratorBlock : Sresp32ModelEntry::Observer
         generators[0]->setNote(60);
         generators[1]->setNote(72);
 
-        model.getEntry(1).addObserver(this);
+        model.getEntry(Sresp32::STEP).addObserver(this);
     }
 
     void tick(int16_t* buffer, unsigned int bufferLength)
@@ -84,7 +84,7 @@ class Sresp32GeneratorBlock : Sresp32ModelEntry::Observer
     void notified(Sresp32ModelEntry::LockedDataReference &data) override
     {
         int step = *static_cast<int*>(data.data);
-        int* sequence = static_cast<int*>(model.getEntry(2).access().data);
+        int* sequence = static_cast<int*>(model.getEntry(Sresp32::SEQUENCE).access().data);
 
         for(int voice = 0; voice < 2; voice++)
         {

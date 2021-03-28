@@ -25,14 +25,14 @@ Sresp32Audio::Sresp32Audio(Sresp32Model &model) : model(model), generators(model
     i2s_set_pin(I2S_NUM_0, &pin_config);
     i2s_set_sample_rates(I2S_NUM_0, 44100);
 
-    model.getEntry(0).addObserver(this);
+    model.getEntry(Sresp32::VOLUME).addObserver(this);
 }
 
 void Sresp32Audio::notified(Sresp32ModelEntry::LockedDataReference &data)
 {
     switch(data.key)
     {
-        case 0: //Volume
+        case Sresp32::VOLUME: //Volume
         volume = *static_cast<float*>(data.data);
         break;
     }

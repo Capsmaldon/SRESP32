@@ -81,9 +81,11 @@ Sresp32ModelEntry::LockedDataReference Sresp32ModelEntry::access()
 
 Sresp32Model::Sresp32Model()
 {
-    addEntry(0, sizeof(float));
-    addEntry(1, sizeof(int));
-    addEntry(2, sizeof(int) * 8 * 2);
+    addEntry(Sresp32::VOLUME, sizeof(float));
+    addEntry(Sresp32::VOICES, sizeof(int));
+    addEntry(Sresp32::STEPS, sizeof(int));
+    addEntry(Sresp32::STEP, sizeof(int));
+    addEntry(Sresp32::SEQUENCE, sizeof(int) * 8 * 2);
 }
 
 Sresp32Model::~Sresp32Model()

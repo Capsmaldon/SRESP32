@@ -22,7 +22,7 @@ class Sresp32Pins
             encoder.clearCount();
             Serial.println(count);
 
-            Sresp32ModelEntry::LockedDataReference data = model.getEntry(0).access();
+            Sresp32ModelEntry::LockedDataReference data = model.getEntry(Sresp32::VOLUME).access();
             float& volume = *static_cast<float*>(data.data);
             volume = volume + (count * 0.1f);
             if(volume < 0.0f) volume = 0.0f;

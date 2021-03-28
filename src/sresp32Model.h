@@ -7,6 +7,18 @@
 #include <mutex>
 #include <string.h>
 
+namespace Sresp32
+{
+    enum Model
+    {
+        VOLUME = 0,
+        VOICES,
+        STEPS,
+        STEP,
+        SEQUENCE
+    };
+}
+
 class Sresp32ModelEntry
 {
 public:

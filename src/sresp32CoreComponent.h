@@ -13,10 +13,15 @@ public:
     void paint();
 
 private:
+
+    String getNoteString(int midiNote);
+
     SSD1306Wire* display = nullptr;
     Sresp32Model &model;
 
     int stepCounter = 0;
+
+    int notes[2][8];
 };
 
 #endif
